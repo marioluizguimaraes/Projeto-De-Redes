@@ -27,10 +27,10 @@ def coletar_informacoes():
 
 # Classe principal do cliente
 class Cliente:
-    def __init__(self, broadcast_port=50000):  # Construtor da classe
-        self.broadcastPort = broadcast_port  # Porta usada para escutar broadcasts UDP
-        self.servidorEndereco = None  # Armazena o endereço do servidor (IP e porta)
-        self.key = None  # Chave de criptografia recebida do servidor
+    def __init__(self, broadcast_port=50000): 
+        self.broadcastPort = broadcast_port  # Porta para broadcasts
+        self.servidorEndereco = None  # Endereço do servidor
+        self.key = None  # Chave de criptografia
         self.cipherSuite = None  # ara criptografar/descriptografar os dados
 
     # Método para iniciar o cliente

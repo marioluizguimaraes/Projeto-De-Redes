@@ -4,7 +4,6 @@ import time
 import psutil  # informações do sistema 
 import os  # Para interagir com o sistema operacional
 from cryptography.fernet import Fernet  # Para criptografar/descriptografar dados
-import wmi
 
 # Função para coletar informações do sistema
 def coletar_informacoes():

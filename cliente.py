@@ -40,8 +40,8 @@ class Cliente:
 
     # Método para escutar mensagens de broadcast UDP
     def escutarBroadcast(self):
-        socketUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Cria um socket UDP
-        socketUDP.bind(('', self.broadcastPort))  # Vincula o socket à porta especificada
+        socketUDP = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        socketUDP.bind(('', self.broadcastPort))
         print("Escutando broadcast...") 
 
         while True:

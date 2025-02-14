@@ -31,7 +31,7 @@ class Cliente:
         self.broadcastPort = broadcast_port  # Porta usada para escutar broadcasts UDP
         self.servidorEndereco = None  # Armazena o endereço do servidor (IP e porta)
         self.key = None  # Chave de criptografia recebida do servidor
-        self.cipherSuite = None  # Objeto usado para criptografar/descriptografar dados
+        self.cipherSuite = None  # ara criptografar/descriptografar os dados
 
     # Método para iniciar o cliente
     def iniciar(self):
@@ -44,15 +44,15 @@ class Cliente:
         socketUDP.bind(('', self.broadcastPort))  # Vincula o socket à porta especificada
         print("Escutando broadcast...") 
 
-        while True:  # Loop infinito para escutar mensagens
+        while True:
             mensagem, _ = socketUDP.recvfrom(1024)  # Recebe uma mensagem UDP (tamanho máximo de 1024 bytes)
             mensagem = mensagem.decode()  # Decodifica a mensagem de bytes para string
             
             if mensagem.startswith("SERVIDOR_TCP:"):  # Verifica se a mensagem começa com "SERVIDOR_TCP:"
                 _, ip_servidor, porta = mensagem.split(":")  # Extrai o IP e a porta do servidor
                 self.servidorEndereco = (ip_servidor, int(porta))  # Define o endereço completo do servidor
-                print(f"Servidor encontrado: {self.servidorEndereco}")  # Informa o endereço do servidor encontrado
-                break  # Sai do loop após encontrar o servidor
+                print(f"Servidor encontrado: {self.servidorEndereco}")
+                break
         
         # Fechando socket UDP
         socketUDP.close()  
@@ -62,8 +62,8 @@ class Cliente:
 
     # Método para conectar-se ao servidor via TCP
     def conectarServidorTCP(self):
-        socketTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Cria um socket TCP
-        socketTCP.connect(self.servidorEndereco)  # Conecta-se ao servidor usando o endereço obtido
+        socketTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        socketTCP.connect(self.servidorEndereco)
         
         self.key = socketTCP.recv(1024)  # Recebe a chave de criptografia enviada pelo servidor
         self.cipherSuite = Fernet(self.key)  # Configura o objeto de criptografia com a chave recebida
@@ -74,7 +74,7 @@ class Cliente:
 
     # Método para enviar informações ao servidor via TCP
     def enviarInformacoes(self, tcp_socket):
-        while True:  # Loop infinito para enviar informações periodicamente
+        while True:
             informacoes = coletar_informacoes()  # Coleta informações do sistema
             dadosCriptografados = self.criptografar(informacoes)  # Criptografa os dados
             tcp_socket.send(dadosCriptografados)  # Envia os dados criptografados ao servidor

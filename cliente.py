@@ -1,9 +1,10 @@
 import socket  # UDP e TCP
-import threading # Para criar Threads
+import threading 
 import time 
 import psutil  # informações do sistema 
 import os  # Para interagir com o sistema operacional
 from cryptography.fernet import Fernet  # Para criptografar/descriptografar dados
+import json
 
 # Função para coletar informações do sistema
 def coletar_informacoes():
@@ -77,12 +78,14 @@ class Cliente:
         while True:
             informacoes = coletar_informacoes()  # Coleta informações do sistema
             dadosCriptografados = self.criptografar(informacoes)  # Criptografa os dados
-            tcp_socket.send(dadosCriptografados)  # Envia os dados criptografados ao servidor
+            tcp_socket.send(dadosCriptografados)
+            print("Dados enviados")  # Envia os dados criptografados ao servidor
             time.sleep(30)
 
     # Método para criptografar dados
     def criptografar(self, dados):
-        return self.cipherSuite.encrypt(str(dados).encode())  # Converte os dados em string, codifica em bytes e criptografa
+        dadosJson = json.dumps(dados).encode()  # Converte os dados em JSON e codifica em bytes
+        return self.cipherSuite.encrypt(dadosJson)  # Converte os dados em string, codifica em bytes e criptografa
 
 # Execução principal do programa
 if __name__ == "__main__":

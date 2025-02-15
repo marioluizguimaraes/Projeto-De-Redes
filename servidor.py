@@ -28,6 +28,7 @@ class Cliente:
         except Exception as e:
             print(f"Erro ao fechar conexão com {self.nome_usuario}: {e}")
 
+#=========================================================================================================================================
 
 # Classe principal do servidor
 class Servidor:
@@ -84,7 +85,7 @@ class Servidor:
                 dadosCriptografados = cliente.conn.recv(1024)  # Recebe dados criptografados do cliente (tamanho máximo de 1024 bytes)
                 if not dadosCriptografados:  # Verifica se a conexão foi encerrada pelo cliente
                     print(f"Cliente {cliente.nome_usuario} desconectado.")
-                    break  # Sai do loop se o cliente desconectar
+                    break 
                 dados = self.descriptografar(dadosCriptografados)  # Descriptografa os dados recebidos
                 
                 if not cliente.nome_usuario:  # Define o nome do usuário se ainda não foi definido
@@ -94,8 +95,8 @@ class Servidor:
                 print(f"Dados recebidos")
                 
         except Exception as e:
-            print(f"Erro ao lidar com cliente {cliente.nome_usuario}: {e}")  # Imprime mensagem de erro
-        
+            print(f"Erro ao lidar com cliente {cliente.nome_usuario}: {e}")
+
         finally:
             self.removerCliente(cliente)  # Remove o cliente da lista de clientes conectados
 
@@ -132,38 +133,38 @@ class Servidor:
                 else:
                     print("Cliente não encontrado.")
 
-            elif comando == "media":  # Calcula a média das informações numéricas de todos os clientes
+            elif comando == "media":
                 self.calcularMedia()
                 
-            elif comando.startswith("desconectar"):  # Desconecta um cliente específico
+            elif comando.startswith("desconectar"):
                 _, identificador = comando.split(maxsplit=1)  # Divide o comando em duas partes (comando e identificador)
                 cliente = self.encontrarCliente(identificador)  # Procura o cliente pelo nome ou IP
                
                 if cliente:
-                    self.removerCliente(cliente)  # Remove o cliente da lista
-                    print(f"Cliente {cliente.nome_usuario} desconectado.")  # Informa que o cliente foi desconectado
+                    self.removerCliente(cliente)
+                    print(f"Cliente {cliente.nome_usuario} desconectado.")
 
                 else:
-                    print("Cliente não encontrado.")  # Informa que o cliente não foi encontrado
+                    print("Cliente não encontrado.")
 
             elif comando == "sair":  # Encerra o servidor
                 self.running = False  # Altera o estado do servidor para "não rodando"
                 for cliente in self.clientes:  # Fecha a conexão com todos os clientes conectados
                     cliente.fecharConexao()
-                print("Encerrando servidor...")  # Informa que o servidor está sendo encerrado
-                break  # Sai do loop
+                print("Encerrando servidor...")
+                break
 
     # Método para encontrar um cliente pelo nome ou IP
     def encontrarCliente(self, identificador):
         for cliente in self.clientes:  # Itera sobre a lista de clientes
             if identificador == cliente.nome_usuario or identificador == cliente.ip:  # Verifica se o identificador corresponde ao nome ou IP
-                return cliente  # Retorna o cliente encontrado
-        return None  # Retorna None se o cliente não for encontrado
+                return cliente
+        return None
 
     # Método para calcular a média das informações numéricas de todos os clientes
     def calcularMedia(self):
         if not self.clientes:  # Verifica se há clientes conectados
-            print("Nenhum cliente conectado.")  # Informa que não há clientes conectados
+            print("Nenhum cliente conectado.")
             return
         print("Médias de todos os dispositivos conectados:")
 
@@ -182,8 +183,9 @@ class Servidor:
             print(f"Erro ao descriptografar dados: {e}")
             return {}
 
+#=========================================================================================================================================
 
 # Execução principal do programa
 if __name__ == "__main__":
-    servidor = Servidor()  # Cria uma instância da classe Servidor
-    servidor.iniciar()  # Inicia o servidor
+    servidor = Servidor()
+    servidor.iniciar()

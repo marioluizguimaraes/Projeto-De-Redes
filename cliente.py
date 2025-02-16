@@ -32,7 +32,7 @@ class Cliente:
         self.broadcastPort = broadcast_port  # Porta para broadcasts
         self.servidorEndereco = None  # Endereço do servidor
         self.key = None  # Chave de criptografia
-        self.cipherSuite = None  # ara criptografar/descriptografar os dados
+        self.cipherSuite = None  # para criptografar/descriptografar os dados
 
     # Método para iniciar o cliente
     def iniciar(self):
@@ -79,7 +79,7 @@ class Cliente:
             informacoes = coletar_informacoes()  # Coleta informações do sistema
             dadosCriptografados = self.criptografar(informacoes)  # Criptografa os dados
             tcp_socket.send(dadosCriptografados)
-            print("Dados enviados")  # Envia os dados criptografados ao servidor
+            print("Dados enviados")
             time.sleep(30)
 
     # Método para criptografar dados

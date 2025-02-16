@@ -123,35 +123,24 @@ class Servidor:
                     print(f"{cliente.nome_usuario} ({cliente.ip})")
 
             elif comando.startswith("info"):
-                _, identificador = comando.split(maxsplit=1)  # Divide o comando em duas partes (comando e identificador)
-                cliente = self.encontrarCliente(identificador)  # Procura o cliente pelo IP
-                
-                if cliente:
-                    print(f"Informações de {cliente.nome_usuario}:")
-                    for chave, valor in cliente.dados.items():
-                        print(f"  - {chave}: {valor}")
-                else:
-                    print("Cliente não encontrado.")
+               # Para fazer
+               print("informaçoes do cliente")
 
             elif comando == "media":
+                # Para fazer
                 self.calcularMedia()
                 
             elif comando.startswith("desconectar"):
-                _, identificador = comando.split(maxsplit=1)  # Divide o comando em duas partes (comando e identificador)
-                cliente = self.encontrarCliente(identificador)  # Procura o cliente pelo nome ou IP
-               
-                if cliente:
-                    self.removerCliente(cliente)
-                    print(f"Cliente {cliente.nome_usuario} desconectado.")
-
-                else:
-                    print("Cliente não encontrado.")
+               # Para fazer
+               print("desconectar cliente")
 
             elif comando == "sair":  # Encerra o servidor
-                self.running = False  # Altera o estado do servidor para "não rodando"
-                for cliente in self.clientes:  # Fecha a conexão com todos os clientes conectados
+                self.running = False  # Altera o estado do servidor
+                
+                # Fecha a conexão com todos os clientes conectados
+                for cliente in self.clientes:
                     cliente.fecharConexao()
-                print("Encerrando servidor...")
+                print("Encerrando servidor!")
                 break
 
     # Método para encontrar um cliente pelo nome ou IP

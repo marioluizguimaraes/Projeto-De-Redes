@@ -23,7 +23,7 @@ def coletar_informacoes():
         return info 
     
     except Exception as e:
-        print(f"Erro ao coletar informações: {e}")  # Imprime mensagem de erro em caso de falha
+        print(f"Erro ao coletar informações: {e}")
         return {}  # Retorna um dicionário vazio em caso de erro
 
 # Classe principal do cliente

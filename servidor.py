@@ -4,30 +4,26 @@ import time
 from cryptography.fernet import Fernet
 import json
 
-# Classe Cliente
 class Cliente:
-    def __init__(self, conn, addr):
-        self.conn = conn  # Conexão TCP com o cliente
-        self.addr = addr  # Endereço do cliente (IP e porta)
-        self.nome_usuario = None
-        self.ip = addr[0]
+    def __init__(self, conexao, endereco):
+        self.conexao = conexao  # Conexão TCP com o cliente
+        self.endereco = endereco  # Endereço do cliente (IP e porta)
+        self.userName = None
+        self.ip = endereco[0]
         self.dados = {}
 
-    # Método para fechar a conexão com o cliente
     def fecharConexao(self):
         try:
-            self.conn.close()  # Fecha a conexão TCP com o cliente
-            print(f"Conexão com {self.nome_usuario} encerrada.")
+            self.conexao.close()
+            print(f"Conexão com {self.userName} encerrada.")
         except Exception as e:
-            print(f"Erro ao fechar conexão com {self.nome_usuario}: {e}")
+            print(f"Erro ao fechar conexão com {self.userName}: {e}")
 
-#=========================================================================================================================================
 
-# Classe principal do servidor
 class Servidor:
-    def __init__(self, broadcast_port=5000, tcp_port=6000):
-        self.broadcast_port = broadcast_port  # Porta de broadcast UDP
-        self.tcp_port = tcp_port  # Porta para conexões TCP
+    def __init__(self, portBroadcast=5000, portTCP=6000):
+        self.portBroadcast = portBroadcast  # Porta de broadcast UDP
+        self.portTCP = portTCP  # Porta para conexões TCP
         self.clientes = []  # Lista de clientes conectados
         self.running = True  # Controla se o servidor está em execução
         self.key = Fernet.generate_key()  # Gera uma chave de criptografia
@@ -40,17 +36,17 @@ class Servidor:
         
         # Cria um socket TCP para aceitar conexões
         self.socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Cria um socket TCP
-        self.socket_tcp.bind(('', self.tcp_port))  # socket na porta TCP 
+        self.socket_tcp.bind(('', self.portTCP))  # socket na porta TCP 
         self.socket_tcp.listen(15)  # Socket escutando no máximo de 15 conexões
-        print(f"Servidor TCP ouvindo na porta {self.tcp_port}...")
+        print(f"Servidor TCP ouvindo na porta {self.portTCP}...")
        
         # Inicia uma thread para ler comandos do terminal
         threading.Thread(target=self.lerComandos).start()
         
         # Loop principal para aceitar novas conexões TCP
         while self.running:
-            conn, addr = self.socket_tcp.accept()  # Aceita uma nova conexão TCP
-            cliente = Cliente(conn, addr)  # Cria um objeto Cliente para representar o cliente conectado
+            conexao, endereco = self.socket_tcp.accept()  # Aceita uma nova conexão TCP
+            cliente = Cliente(conexao, endereco)  # Cria um objeto Cliente para representar o cliente conectado
             self.clientes.append(cliente)  # Adiciona o cliente à lista de clientes
             
             # Inicia uma thread para lidar com o cliente
@@ -63,32 +59,32 @@ class Servidor:
         socketUDP.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)  # envio de broadcast
         ip_servidor = socket.gethostbyname(socket.gethostname())  # Obtém o IP do servidor
         
-        mensagem = f"SERVIDOR_TCP:{ip_servidor}:{self.tcp_port}"  # Cria a mensagem de broadcast com IP e porta TCP
+        mensagem = f"SERVIDOR_TCP:{ip_servidor}:{self.portTCP}"  # Cria a mensagem de broadcast com IP e porta TCP
         
         while self.running:  # Loop infinito para enviar mensagens de broadcast
-            socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.broadcast_port)) # Envia a mensagem na rede
+            socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.portBroadcast)) # Envia a mensagem na rede
             time.sleep(30)
 
     # Lida com a comunicação com um cliente específico
     def lidarCliente(self, cliente):
         try:
-            cliente.conn.send(self.key)  # Envia a chave de criptografia ao cliente
+            cliente.conexao.send(self.key)  # Envia a chave de criptografia ao cliente
            
             while self.running:  # Loop infinito para receber dados do cliente
-                dadosCriptografados = cliente.conn.recv(1024)  # Recebe dados criptografados do cliente (tamanho máximo de 1024 bytes)
+                dadosCriptografados = cliente.conexao.recv(1024)  # Recebe dados criptografados do cliente (tamanho máximo de 1024 bytes)
                 if not dadosCriptografados:  # Verifica se a conexão foi encerrada pelo cliente
-                    print(f"Cliente {cliente.nome_usuario} desconectado.")
+                    print(f"Cliente {cliente.userName} desconectado.")
                     break 
                 dados = self.descriptografar(dadosCriptografados)  # Descriptografa os dados recebidos
                 
-                if not cliente.nome_usuario:  # Define o nome do usuário se ainda não foi definido
-                    cliente.nome_usuario = dados.get("nome_usuario", "Desconhecido")
-                    print(f"\nNovo cliente conectado: {cliente.nome_usuario} ({cliente.ip})")
+                if not cliente.userName:  # Define o nome do usuário se ainda não foi definido
+                    cliente.userName = dados.get("userName", "Desconhecido")
+                    print(f"\nNovo cliente conectado: {cliente.userName} ({cliente.ip})")
                 cliente.dados = dados  # Atualiza os dados do cliente
                 print(f"Dados recebidos")
                 
         except Exception as e:
-            print(f"Erro ao lidar com cliente {cliente.nome_usuario}: {e}")
+            print(f"Erro ao lidar com cliente {cliente.userName}: {e}")
 
         finally:
             self.removerCliente(cliente)  # Remove o cliente da lista de clientes conectados
@@ -113,7 +109,7 @@ class Servidor:
 
             elif comando == "listar": 
                 for cliente in self.clientes:
-                    print(f"{cliente.nome_usuario} ({cliente.ip})")
+                    print(f"{cliente.userName} ({cliente.ip})")
 
             elif comando.startswith("info"):
                # Para fazer
@@ -139,7 +135,7 @@ class Servidor:
     # Método para encontrar um cliente pelo nome ou IP
     def encontrarCliente(self, identificador):
         for cliente in self.clientes:  # Itera sobre a lista de clientes
-            if identificador == cliente.nome_usuario or identificador == cliente.ip:  # Verifica se o identificador corresponde ao nome ou IP
+            if identificador == cliente.userName or identificador == cliente.ip:  # Verifica se o identificador corresponde ao nome ou IP
                 return cliente
         return None
 

@@ -26,7 +26,7 @@ def coletar_informacoes():
         print(f"Erro ao coletar informações: {e}")
         return {}
 
-# Classe Cliente
+
 class Cliente:
     def __init__(self, broadcast_port=5000): 
         self.broadcastPort = broadcast_port 

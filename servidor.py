@@ -32,7 +32,7 @@ class Cliente:
 
 # Classe principal do servidor
 class Servidor:
-    def __init__(self, broadcast_port=50000, tcp_port=60000):
+    def __init__(self, broadcast_port=5000, tcp_port=6000):
         self.broadcast_port = broadcast_port  # Porta de broadcast UDP
         self.tcp_port = tcp_port  # Porta para conexões TCP
         self.clientes = []  # Lista de clientes conectados
@@ -73,10 +73,10 @@ class Servidor:
         mensagem = f"SERVIDOR_TCP:{ip_servidor}:{self.tcp_port}"  # Cria a mensagem de broadcast com IP e porta TCP
         
         while self.running:  # Loop infinito para enviar mensagens de broadcast
-            socketUDP.sendto(mensagem.encode(), ('<broadcast>', self.broadcast_port)) # Envia a mensagem na rede
+            socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.broadcast_port)) # Envia a mensagem na rede
             time.sleep(30)
 
-    # Método para lidar com a comunicação com um cliente específico
+    # Lida com a comunicação com um cliente específico
     def lidarCliente(self, cliente):
         try:
             cliente.conn.send(self.key)  # Envia a chave de criptografia ao cliente

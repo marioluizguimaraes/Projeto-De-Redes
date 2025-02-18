@@ -28,7 +28,7 @@ def coletar_informacoes():
 
 # Classe principal do cliente
 class Cliente:
-    def __init__(self, broadcast_port=50000): 
+    def __init__(self, broadcast_port=5000): 
         self.broadcastPort = broadcast_port  # Porta para broadcasts
         self.servidorEndereco = None  # Endereço do servidor
         self.key = None  # Chave de criptografia

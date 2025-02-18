@@ -1,9 +1,9 @@
-import socket  # UDP e TCP
+import socket
 import threading 
 import time 
-import psutil  # informações do sistema 
-import os  # Para interagir com o sistema operacional
-from cryptography.fernet import Fernet  # Para criptografar/descriptografar dados
+import psutil
+import os
+from cryptography.fernet import Fernet
 import json
 
 # Função para coletar informações do sistema
@@ -11,28 +11,28 @@ def coletar_informacoes():
     try:
         # Cria um dicionário para armazenar as informações coletadas
         info = {
-            "nome_usuario": os.getlogin(),  # Nome do usuário logado no sistema
-            "ipv4": socket.gethostbyname(socket.gethostname()),  # Endereço IPv4 local do dispositivo
-            "cores": psutil.cpu_count(logical=True),  # Número de núcleos lógicos da CPU
-            "ram_total": round(psutil.virtual_memory().total / (1024 ** 3), 2),  # Memória RAM total (em GB)
-            "ram_livre": round(psutil.virtual_memory().available / (1024 ** 3), 2),  # Memória RAM disponível (em GB)
-            "disco_total": round(psutil.disk_usage('/').total / (1024 ** 3), 2),  # Espaço total no disco principal (em GB)
-            "disco_livre": round(psutil.disk_usage('/').free / (1024 ** 3), 2),  # Espaço livre no disco principal (em GB)
+            "nome_usuario": os.getlogin(),
+            "ipv4": socket.gethostbyname(socket.gethostname()),
+            "cores": psutil.cpu_count(logical=True),
+            "ram_total": round(psutil.virtual_memory().total / (1024 ** 3), 2), 
+            "ram_livre": round(psutil.virtual_memory().available / (1024 ** 3), 2),
+            "disco_total": round(psutil.disk_usage('/').total / (1024 ** 3), 2),
+            "disco_livre": round(psutil.disk_usage('/').free / (1024 ** 3), 2),
         }
 
         return info 
     
     except Exception as e:
         print(f"Erro ao coletar informações: {e}")
-        return {}  # Retorna um dicionário vazio em caso de erro
+        return {}
 
-# Classe principal do cliente
+# Classe Cliente
 class Cliente:
     def __init__(self, broadcast_port=5000): 
-        self.broadcastPort = broadcast_port  # Porta para broadcasts
-        self.servidorEndereco = None  # Endereço do servidor
-        self.key = None  # Chave de criptografia
-        self.cipherSuite = None  # para criptografar/descriptografar os dados
+        self.broadcastPort = broadcast_port 
+        self.servidorEndereco = None
+        self.key = None 
+        self.cipherSuite = None
 
     # Método para iniciar o cliente
     def iniciar(self):

@@ -69,7 +69,7 @@ class Servidor:
         
         while self.running:  # Loop para enviar mensagens
             socketUDP.sendto(mensagem.encode(), ('<broadcast>', self.portBroadcast)) 
-            #socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.portBroadcast)) 
+            #socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.portBroadcast)) # rede do ifrn
             time.sleep(30)
 
     # Lida com a comunicação com um cliente específico
@@ -86,7 +86,7 @@ class Servidor:
                 
                 # Define o nome do usuário se ainda não foi definido
                 if not cliente.userName:  
-                    cliente.userName = dados.get("nome_usuario", "Desconhecido")
+                    cliente.userName = dados.get("userName", "Desconhecido")
                     print(f"\nNovo cliente conectado: {cliente.userName} ({cliente.ip})")
                 cliente.dados = dados
                 print(f"Dados recebidos")
@@ -156,14 +156,14 @@ class Servidor:
                 
                 break
 
-    # Encontrar cliente na lista
+    # indentificar cliente pelo IP
     def encontrarCliente(self, identificador):
         for cliente in self.clientes:  
             if (identificador == identificador == cliente.ip):  
                 return cliente
         return None
 
-
+    # Método para calcular a média das informações numéricas de todos os clientes
     def calcularMedia(self):
         if (not self.clientes):  # Verifica se há clientes conectados
             print("Nenhum cliente conectado.")

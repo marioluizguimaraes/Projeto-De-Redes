@@ -86,7 +86,7 @@ class Servidor:
                 
                 # Define o nome do usuário se ainda não foi definido
                 if not cliente.userName:  
-                    cliente.userName = dados.get("userName", "Desconhecido")
+                    cliente.userName = dados.get("nome_usuario", "Desconhecido")
                     print(f"\nNovo cliente conectado: {cliente.userName} ({cliente.ip})")
                 cliente.dados = dados
                 print(f"Dados recebidos")
@@ -156,14 +156,14 @@ class Servidor:
                 
                 break
 
-    # indentificar cliente pelo IP
+    # Encontrar cliente na lista
     def encontrarCliente(self, identificador):
         for cliente in self.clientes:  
             if (identificador == identificador == cliente.ip):  
                 return cliente
         return None
 
-    # Método para calcular a média das informações numéricas de todos os clientes
+
     def calcularMedia(self):
         if (not self.clientes):  # Verifica se há clientes conectados
             print("Nenhum cliente conectado.")

@@ -36,7 +36,7 @@ class Cliente:
 
     # Método para iniciar o cliente
     def iniciar(self):
-        # Inicia uma thread para escutar mensagens de broadcast UDP
+        # Thread para escutar mensagens de broadcast UDP
         threading.Thread(target=self.escutarBroadcast).start()
 
     # Método para escutar mensagens de broadcast UDP
@@ -46,16 +46,16 @@ class Cliente:
         print("Escutando broadcast...") 
 
         while True:
-            mensagem, _ = socketUDP.recvfrom(1024)  # Recebe uma mensagem UDP (tamanho máximo de 1024 bytes)
-            mensagem = mensagem.decode()  # Decodifica a mensagem de bytes para string
+            mensagem, _ = socketUDP.recvfrom(1024)  # Recebe a mensagem pelo UDP com tamanho máximo de 1024 bytes
+            mensagem = mensagem.decode()
             
             if mensagem.startswith("SERVIDOR_TCP:"):  # Verifica se a mensagem começa com "SERVIDOR_TCP:"
-                _, ip_servidor, porta = mensagem.split(":")  # Extrai o IP e a porta do servidor
-                self.servidorEndereco = (ip_servidor, int(porta))  # Define o endereço completo do servidor
+                _, ip_servidor, porta = mensagem.split(":")
+                self.servidorEndereco = (ip_servidor, int(porta))
                 print(f"Servidor encontrado: {self.servidorEndereco}")
                 break
         
-        # Fechando socket UDP
+        # Fechando socket UDP do cliente
         socketUDP.close()  
         
         # Conectando ao servidor via TCP
@@ -70,21 +70,21 @@ class Cliente:
         self.cipherSuite = Fernet(self.key)  # Configura o objeto de criptografia com a chave recebida
         print("Conectado ao servidor.")
         
-        # Inicia uma thread para enviar informações ao servidor
+        # Thread para enviar informações ao servidor
         threading.Thread(target=self.enviarInformacoes, args=(socketTCP,)).start()
 
-    # Método para enviar informações ao servidor via TCP
+    # Envia informações via TCP
     def enviarInformacoes(self, tcp_socket):
         while True:
-            informacoes = coletar_informacoes()  # Coleta informações do sistema
-            dadosCriptografados = self.criptografar(informacoes)  # Criptografa os dados
+            informacoes = coletar_informacoes() 
+            dadosCriptografados = self.criptografar(informacoes)
             tcp_socket.send(dadosCriptografados)
             print("Dados enviados")
             time.sleep(30)
 
     # Método para criptografar dados
     def criptografar(self, dados):
-        dadosJson = json.dumps(dados).encode()  # Converte os dados em JSON e codifica em bytes
+        dadosJson = json.dumps(dados).encode() 
         return self.cipherSuite.encrypt(dadosJson)  # Converte os dados em string, codifica em bytes e criptografa
 
 # Execução principal do programa

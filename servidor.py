@@ -1,6 +1,7 @@
 import socket
 import threading 
 import time 
+import ssl
 from cryptography.fernet import Fernet
 import json
 
@@ -24,6 +25,7 @@ class Servidor:
     def __init__(self, portBroadcast, portTCP):
         self.portBroadcast = portBroadcast
         self.portTCP = portTCP 
+        self.hostTCP = '0.0.0.0'
         self.clientes = []
         self.running = True  # Controla se o servidor está em execução
         
@@ -42,8 +44,13 @@ class Servidor:
         
         # Socket TCP
         self.socket_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  
-        self.socket_tcp.bind(('0.0.0.0', self.portTCP))
-        self.socket_tcp.listen(15)  # Escuta no máximo de 15 conexões
+        self.socket_tcp.bind((self.hostTCP, self.portTCP))
+        self.socket_tcp.listen(15)
+        
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(self.certfile, self.keyfile)
+        
+        # Escuta no máximo de 15 conexões
         print(f"Servidor TCP ouvindo na porta {self.portTCP}...")
        
         # Thread para ler comandos do terminal

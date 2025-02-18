@@ -1,24 +1,17 @@
-import socket  # UDP e TCP
+import socket
 import threading 
 import time 
-from cryptography.fernet import Fernet  # Para criptografar/descriptografar dados
+from cryptography.fernet import Fernet
 import json
 
-# Classe para representar cada cliente conectado
+# Classe Cliente
 class Cliente:
     def __init__(self, conn, addr):
         self.conn = conn  # Conexão TCP com o cliente
         self.addr = addr  # Endereço do cliente (IP e porta)
-        self.nome_usuario = None  # Nome do usuário logado no cliente (inicialmente vazio)
-        self.ip = addr[0]  # IP do cliente
-        self.dados = {}  # Dicionário para armazenar os dados enviados pelo cliente
-
-    # Método para enviar um comando ao cliente
-    def enviarComando(self, comando):
-        try:
-            self.conn.send(comando.encode())  # Envia o comando codificado em bytes ao cliente
-        except Exception as e:
-            print(f"Erro ao enviar comando para {self.nome_usuario}: {e}")
+        self.nome_usuario = None
+        self.ip = addr[0]
+        self.dados = {}
 
     # Método para fechar a conexão com o cliente
     def fecharConexao(self):

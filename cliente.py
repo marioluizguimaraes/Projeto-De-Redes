@@ -1,8 +1,8 @@
+import psutil
+import os
 import socket
 import threading 
 import time 
-import psutil
-import os
 from cryptography.fernet import Fernet
 import json
 
@@ -46,31 +46,32 @@ class Cliente:
         print("Escutando broadcast...") 
 
         while True:
-            mensagem, _ = socketUDP.recvfrom(1024)  # Recebe a mensagem pelo UDP com tamanho máximo de 1024 bytes
+            mensagem, _ = socketUDP.recvfrom(1024)
             mensagem = mensagem.decode()
             
-            if mensagem.startswith("SERVIDOR_TCP:"):  # Verifica se a mensagem começa com "SERVIDOR_TCP:"
+            if mensagem.startswith("SERVIDOR_TCP:"):  
                 _, ip_servidor, porta = mensagem.split(":")
                 self.servidorEndereco = (ip_servidor, int(porta))
                 print(f"Servidor encontrado: {self.servidorEndereco}")
                 break
         
-        # Fechando socket UDP do cliente
         socketUDP.close()  
         
-        # Conectando ao servidor via TCP
         self.conectarServidorTCP()  
 
     # Método para conectar-se ao servidor via TCP
     def conectarServidorTCP(self):
+       
         socketTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         socketTCP.connect(self.servidorEndereco)
+
         
-        self.key = socketTCP.recv(1024)  # Recebe a chave de criptografia enviada pelo servidor
-        self.cipherSuite = Fernet(self.key)  # Configura o objeto de criptografia com a chave recebida
-        print("Conectado ao servidor.")
         
-        # Thread para enviar informações ao servidor
+        self.key = socketTCP.recv(1024)  
+        self.cipherSuite = Fernet(self.key)
+        print("Conectado!")
+        
+        
         threading.Thread(target=self.enviarInformacoes, args=(socketTCP,)).start()
 
     # Envia informações via TCP
@@ -82,12 +83,10 @@ class Cliente:
             print("Dados enviados")
             time.sleep(30)
 
-    # Método para criptografar dados
     def criptografar(self, dados):
         dadosJson = json.dumps(dados).encode() 
         return self.cipherSuite.encrypt(dadosJson)  # Converte os dados em string, codifica em bytes e criptografa
 
-# Execução principal do programa
 if __name__ == "__main__":
     cliente = Cliente()
     cliente.iniciar()

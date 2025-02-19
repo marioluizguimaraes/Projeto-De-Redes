@@ -68,8 +68,8 @@ class Servidor:
         mensagem = f"SERVIDOR_TCP:{ip_servidor}:{self.portTCP}" 
         
         while self.running:  # Loop para enviar mensagens
-            socketUDP.sendto(mensagem.encode(), ('<broadcast>', self.portBroadcast)) 
-            #socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.portBroadcast)) 
+            #socketUDP.sendto(mensagem.encode(), ('<broadcast>', self.portBroadcast)) 
+            socketUDP.sendto(mensagem.encode(), ('10.25.255.255', self.portBroadcast)) 
             time.sleep(30)
 
     # Lida com a comunicação com um cliente específico

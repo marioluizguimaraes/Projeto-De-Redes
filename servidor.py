@@ -37,7 +37,6 @@ class Servidor:
         self.key = Fernet.generate_key()  # Gera uma chave de criptografia
         self.cipher_suite = Fernet(self.key)  # Configura o objeto de criptografia com a chave gerada
 
-
     def iniciar(self):
         # Thread para enviar mensagens de broadcast
         threading.Thread(target=self.broadcastUDP).start()
@@ -181,8 +180,6 @@ class Servidor:
     def criptografar(self, dados):
         dadosJson = json.dumps(dados).encode()  # Converte os dados em JSON e codifica em bytes
         return self.cipher_suite.encrypt(dadosJson)
-
-    
 
 #=========================================================================================================================================
 

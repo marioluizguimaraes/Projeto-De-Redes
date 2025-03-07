@@ -78,8 +78,13 @@ class Cliente:
         while True:
             informacoes = coletar_informacoes() 
             dadosCriptografados = self.criptografar(informacoes)
-            tcp_socket.send(dadosCriptografados)
-            print("Dados enviados")
+            try:    
+                tcp_socket.send(dadosCriptografados)
+                print("Dados enviados")
+            
+            except (BrokenPipeError, ConnectionResetError):
+                print("Erro: conexão perdida com o servidor.")
+                return
             time.sleep(30)
 
     # Método para criptografar dados
